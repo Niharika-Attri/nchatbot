@@ -79,23 +79,34 @@ def get_gemini_response(user_input):
         return response
     else:
         return "I'm sorry! I cannot answer that! I am designed to talk about your mental health issues!"
-    
+#print(get_gemini_response("headache"+"keep the answer short and to the point. Only suggest the preventions"))
+
 # Function to handle user input and send a response
-def process_input(input_text):
-    response = "Processed: " + input_text
+# def process_input(input_text):
+    # response = "Processed: " + input_text
     #print(response)
 
 # for line in sys.stdin:
 #     input_text = line.strip()
 #     process_input(input_text)
 
-if len(sys.argv) > 1:
+if len(sys.argv) == 2:
     for arg in sys.argv[1:]:
         response_text = chatbot(arg)
         print(response_text)
+elif len(sys.argv) == 3:
+    print("what problem are you facing?('exit' to quit):")
+    #user_input = input("What problems are you facing? (type 'exit' to quit): ")
+    user_input = sys.argv[2]
+    response_text = get_gemini_response(user_input+" keep the answer short and to the point. Only suggest the preventions")
+    print(response_text)
+    print("is there anything else i can do for you")
+    #print(response_text + "\n\nIs there anything else I can help you with?")
 else:
     while True:
-        user_input = input("What problems are you facing? (type 'exit' to quit): ")
+        print("what problem are you facing?(type 'exit' to quit):")
+        #user_input = input("What problems are you facing? (type 'exit' to quit): ")
+        user_input = sys.argv[1]
         if user_input.lower() == 'exit':
             break
         response_text = chatbot(user_input)

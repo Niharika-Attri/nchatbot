@@ -16,6 +16,14 @@ app.post('/chatbot', (req, res) => {
     
     // Retrieve user input from query parameter
     const user_input = req.body.input;
+    const query = req.body.query
+
+    if(!user_input){
+        res.status(400).json({
+            message:"please enter input"
+        })
+        return
+    }
 
     // Path to your Python script
     const pythonScriptPath = 'model1.py';
@@ -23,28 +31,22 @@ app.post('/chatbot', (req, res) => {
     // Configure options for PythonShell
     const options = {
         mode: 'text',
-        //pythonPath: '/usr/bin/python3',
         pythonOptions: ['-u'],
         scriptPath: '.', // Path to the directory containing the script
-        args: [JSON.stringify(user_input)], // Pass user input as argument
-        // stdin: null
+        //args: [JSON.stringify(user_input), JSON.stringify(query)], // Pass user input as argument
+        args:[user_input, query]
+
     };
 
     // Create a new PythonShell instance
     let pyshell = new PythonShell(pythonScriptPath, options);
 
-    // send input to python script
-    // function sendUserInput(input) {
-    //     pyshell.send(JSON.stringify(input));
-    // }
-    // sendUserInput(user_input)
-
     // Collect output from Python script
-    let output = '';
+    let output = [];
 
     // Handle incoming messages from Python script
     pyshell.on('message', (message) => {
-        output += message + '\n';
+        output.push(message)
         // console.log("message:", message);
         //res.json({output})
     });
