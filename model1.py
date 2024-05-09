@@ -101,7 +101,7 @@ elif len(sys.argv) == 3:
     response_text = get_gemini_response(user_input+" keep the answer short and to the point. Only suggest the preventions")
     print(response_text)
     print("is there anything else i can do for you")
-    #print(response_text + "\n\nIs there anything else I can help you with?")
+    print(response_text + "\n\nIs there anything else I can help you with?")
 else:
     while True:
         print("what problem are you facing?(type 'exit' to quit):")

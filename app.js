@@ -11,10 +11,22 @@ app.listen(3333, () => {
 app.use(express.json())
 app.use(morgan('dev'))
 
+// Path to your Python script
+var pythonScriptPath = 'model1.py';
+
+
+// Configure options for PythonShell
+var options = {
+    mode: 'text',
+    pythonOptions: ['-u'],
+    scriptPath: '.', // Path to the directory containing the script
+    args:[]
+};
+
 // Endpoint to handle incoming requests
 app.post('/chatbot', (req, res) => {
     
-    // Retrieve user input from query parameter
+    // user input from request body
     const user_input = req.body.input;
     const query = req.body.query
 
@@ -25,18 +37,8 @@ app.post('/chatbot', (req, res) => {
         return
     }
 
-    // Path to your Python script
-    const pythonScriptPath = 'model1.py';
-
-    // Configure options for PythonShell
-    const options = {
-        mode: 'text',
-        pythonOptions: ['-u'],
-        scriptPath: '.', // Path to the directory containing the script
-        //args: [JSON.stringify(user_input), JSON.stringify(query)], // Pass user input as argument
-        args:[user_input, query]
-
-    };
+    // adding arguments to options
+    options.args.push(user_input, query)
 
     // Create a new PythonShell instance
     let pyshell = new PythonShell(pythonScriptPath, options);
@@ -47,17 +49,8 @@ app.post('/chatbot', (req, res) => {
     // Handle incoming messages from Python script
     pyshell.on('message', (message) => {
         output.push(message)
-        // console.log("message:", message);
-        //res.json({output})
     });
-        // const messageTimeout = 5000;
-        // setTimeout(() => {
-        //     console.log('No message received within the timeout period.');
-        //     res.status(408).json({
-        //         message: "Request timed out"
-        //     })
-        //     return
-        // }, messageTimeout);
+
    
     // Handle errors
     pyshell.on('error', (error) => {
